@@ -5,7 +5,6 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,10 +24,11 @@ class MainActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
 
+
         wearCategoryListenerMen()
-        wearCategoryListenerWomen()
-        wearCategoryListenerChildren()
-        wearCategoryListenerSortBy()
+       // wearCategoryListenerWomen()
+       // wearCategoryListenerChildren()
+        //wearCategoryListenerSortBy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -38,24 +38,58 @@ class MainActivity : AppCompatActivity() {
     }
     private var color = 0
     private fun wearCategoryListenerMen(){
-        val men = findViewById<Button>(R.id.men_label)
+
         val  menVisibility =  findViewById<ConstraintLayout>(R.id.wear_category_option)
-        val text  =  men as TextView
 
-        men.setOnClickListener{
-            if(menVisibility.isVisible){
-                menVisibility.isVisible = false
-                text.text = getString(R.string.men)
-                text.setTextColor(color)
+        var category = arrayOf(findViewById<Button>(R.id.man),findViewById<Button>(R.id.women),
+            findViewById<Button>(R.id.children),findViewById<Button>(R.id.sort_label))
 
-            }else    if(!menVisibility.isVisible){
+        category.forEach { element->
+            val text  =  element as TextView
+            color = text.textColors.defaultColor
 
-                text.text = getString(R.string.men_triangle_up)
-                color = text.textColors.defaultColor
-                text.setTextColor(getColor(R.color.colorPrimaryDark))
-                menVisibility.isVisible = true
+            element.setOnClickListener{
+                category.forEach {
+                    element->
+                    element.setTextColor(color)
+                }
+
+                if(menVisibility.isVisible){
+                    println(text.text)
+                    if(text.text == getString(R.string.men)){
+                        text.text = getString(R.string.men)
+
+                    }else if(text.text == getString(R.string.women)){
+                        text.text = getString(R.string.women)
+                        println(text.text)
+                    }else if(text.text == getString(R.string.children)){
+                        text.text = getString(R.string.children)
+                    }else if(text.text == getString(R.string.sort_by)){
+                        text.text = getString(R.string.sort_by)
+                    }
+                    menVisibility.isVisible = false
+                   
+
+                }else{
+
+                    if(text.text == getString(R.string.men)){
+                        text.text = getString(R.string.men_triangle_up)
+
+                    }else if(text.text == getString(R.string.women)){
+                        text.text = getString(R.string.women_triangle_up)
+                        println(text.text)
+                    }else if(text.text == getString(R.string.children)){
+                        text.text = getString(R.string.children_triangle_up)
+                    }else if(text.text == getString(R.string.sort_by)){
+                        text.text = getString(R.string.sort_triangle_up)
+                    }
+                    color = text.textColors.defaultColor
+                    text.setTextColor(getColor(R.color.colorPrimaryDark))
+                    menVisibility.isVisible = true
+                }
             }
         }
+
 
     }
     private fun wearCategoryListenerWomen(){
