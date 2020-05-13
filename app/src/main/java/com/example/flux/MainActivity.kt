@@ -1,16 +1,18 @@
 package com.example.flux
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,42 +51,61 @@ class MainActivity : AppCompatActivity() {
             color = text.textColors.defaultColor
 
             element.setOnClickListener{
+                val fadeOut: Animation = AlphaAnimation(1.0f, 0.0f)
+                val fadeIn: Animation = AlphaAnimation(0.0f, 0.1f)
                 category.forEach {
                     element->
                     element.setTextColor(color)
+                    element.text= element.text.toString().replace(getString(R.string.after_symbol),getString(R.string.init_symbol))
+
                 }
 
                 if(menVisibility.isVisible){
-                    println(text.text)
-                    if(text.text == getString(R.string.men)){
-                        text.text = getString(R.string.men)
 
-                    }else if(text.text == getString(R.string.women)){
-                        text.text = getString(R.string.women)
-                        println(text.text)
-                    }else if(text.text == getString(R.string.children)){
-                        text.text = getString(R.string.children)
-                    }else if(text.text == getString(R.string.sort_by)){
-                        text.text = getString(R.string.sort_by)
+                    when (text.text) {
+                        getString(R.string.men_triangle_up) -> {
+                            text.text = getString(R.string.men)
+                        }
+                        getString(R.string.women_triangle_up) -> {
+                            text.text = getString(R.string.women)
+                        }
+                        getString(R.string.children_triangle_up) -> {
+                            text.text = getString(R.string.children)
+                        }
+                        getString(R.string.sort_triangle_up) -> {
+                            text.text = getString(R.string.sort_by)
+                        }
                     }
-                    menVisibility.isVisible = false
-                   
 
-                }else{
+                    menVisibility.animation=fadeOut
 
-                    if(text.text == getString(R.string.men)){
-                        text.text = getString(R.string.men_triangle_up)
+                    menVisibility.animation.duration = 200
+                     menVisibility.isVisible = false
 
-                    }else if(text.text == getString(R.string.women)){
-                        text.text = getString(R.string.women_triangle_up)
-                        println(text.text)
-                    }else if(text.text == getString(R.string.children)){
-                        text.text = getString(R.string.children_triangle_up)
-                    }else if(text.text == getString(R.string.sort_by)){
-                        text.text = getString(R.string.sort_triangle_up)
+
+                }else {
+
+                    when (text.text) {
+                        getString(R.string.men) -> {
+                            text.text = getString(R.string.men_triangle_up)
+
+                        }
+                        getString(R.string.women) -> {
+                            text.text = getString(R.string.women_triangle_up)
+                            println(text.text)
+                        }
+                        getString(R.string.children) -> {
+                            text.text = getString(R.string.children_triangle_up)
+                        }
+                        getString(R.string.sort_by) -> {
+                            text.text = getString(R.string.sort_triangle_up)
+                        }
                     }
                     color = text.textColors.defaultColor
                     text.setTextColor(getColor(R.color.colorPrimaryDark))
+                    menVisibility.animation=fadeIn
+
+                    menVisibility.animation.duration = 200
                     menVisibility.isVisible = true
                 }
             }

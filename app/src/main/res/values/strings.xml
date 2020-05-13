@@ -14,6 +14,8 @@
     <string name="sign_in">Sign in</string>
     <string name="register">Register</string>
     <string name="search">Search</string>
+    <string name="init_symbol">▼</string>
+    <string name="after_symbol">▲</string>
     <string name="men">Men ▼</string>
     <string name="men_triangle_up">Men ▲</string>
     <string name="women_triangle_up">Women ▲</string>
