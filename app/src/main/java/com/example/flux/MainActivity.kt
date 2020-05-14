@@ -1,23 +1,35 @@
 package com.example.flux
 
+import android.app.Activity
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.grid_resource.*
+import org.json.JSONArray
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -27,19 +39,33 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        wearCategoryListenerMen()
-       // wearCategoryListenerWomen()
-       // wearCategoryListenerChildren()
-        //wearCategoryListenerSortBy()
+
+
+        wearCategoryListener()
+        val category =CategoryAdaptor(this,45, arrayListOf(3,4,56,4,5,6,7,8,4,5,4,5,76,6,4,34,34,34,5,34,6,67,8), arrayOf(2,49,45,0))
+
+        wears_category_items_view.adapter= category
+
     }
 
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = StrictMode.ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
+        }
+        return super.onCreateView(name, context, attrs)
+    }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
     private var color = 0
-    private fun wearCategoryListenerMen(){
+    private fun wearCategoryListener(){
 
         val  menVisibility =  findViewById<ConstraintLayout>(R.id.wear_category_option)
 
@@ -186,4 +212,45 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    class CategoryAdaptor(private  var context:Activity,private var desc:Int, private  var item:ArrayList<Int>, private  var imgX: Array<Int>) :
+        ArrayAdapter<Int>(context,desc,item) {
+        private var imageView = ImageView(context)
+        var  storeDB = JSONArray()
+        private fun queryForRelics(){
+            val parser=FileParser()
+            storeDB = parser.parseFile(context, R.raw.new_mvc)
+            for (artifact in arrayOf(storeDB)){
+                storeDB = artifact;
+            }
+
+        }
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            queryForRelics()
+            var layout = context.layoutInflater
+
+            var view =layout.inflate(R.layout.grid_resource,null,true)
+            var gridItemView = view.findViewById<ImageView>(R.id.grid_item)
+            var gridItemCart = view.findViewById<Button>(R.id.grid_add_to_cart)
+
+            val url = URL("http://image10.bizrate-images.com/resize?sq=60&uid=2216744464")
+            val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+
+
+
+            if (convertView == null) {
+
+              //  gridItemView .layoutParams = ConstraintLayout.LayoutParams(580,600 )
+            } else {
+//               gridItemView = convertView as ImageView
+            }
+            gridItemView.setImageBitmap(bmp)
+            return view
+            // return super.getView(position, convertView, parent)
+        }
+
+
+    }
+
 }
+
