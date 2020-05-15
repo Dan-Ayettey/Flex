@@ -13,17 +13,18 @@
         android:layout_height="537dp"
         android:layout_marginEnd="4dp"
 
+        android:background="@color/colorAccentWhite"
         android:columnWidth="200dp"
         android:gravity="center"
-        android:horizontalSpacing="1dp"
+        android:horizontalSpacing="3dp"
         android:numColumns="2"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="1dp"
+        android:verticalSpacing="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.22000003" />
 
 
 
@@ -37,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" android:background="@color/colorAccentWhite">
 
 
         <EditText
@@ -46,7 +47,7 @@
             android:layout_height="52dp"
             android:layout_marginTop="16dp"
             android:autofillHints=""
-            android:backgroundTint="@color/colorAccentGary"
+            android:backgroundTint="@color/colorAccentGray"
             android:ems="10"
             android:hint="@string/search"
             android:inputType="textPersonName"
@@ -136,8 +137,8 @@
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:height="30dp"
-            android:background="@color/colorAccentGary"
-            android:backgroundTint="@color/colorAccentGary"
+            android:background="@color/colorAccentGray"
+            android:backgroundTint="@color/colorAccentGray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/women" />
@@ -229,8 +230,8 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:height="1dp"
-            android:background="@color/colorAccentGary"
-            android:backgroundTint="@color/colorAccentGary"
+            android:background="@color/colorAccentGray"
+            android:backgroundTint="@color/colorAccentGray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -242,152 +243,135 @@
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:backgroundTint="@color/colorAccentGary"
-android:layoutAnimation="@anim/fragment_fade_enter"
-app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-
-   <Button
-       android:id="@+id/button"
-       android:layout_width="40dp"
-       android:layout_height="40dp"
-       android:layout_marginTop="16dp"
-       android:background="@drawable/ic_search_black_24dp"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.98"
-       app:layout_constraintStart_toStartOf="@+id/search"
-       app:layout_constraintTop_toTopOf="parent" />
-
-   <Button
-       android:id="@+id/sort_label"
-       android:layout_width="105dp"
-       android:layout_height="35dp"
-       android:layout_marginTop="8dp"
-       android:background="@drawable/rounded_edges_white"
-       android:backgroundTint="@color/colorAccentWhite"
-       android:text="@string/sort_by"
-       android:textSize="12sp"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.93"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/search" />
-
-   <Button
-       android:id="@+id/men_label"
-       android:layout_width="65dp"
-       android:layout_height="35dp"
-       android:layout_marginTop="8dp"
-       android:background="@drawable/rounded_edges_white"
-       android:backgroundTint="@color/colorAccentWhite"
-       android:text="@string/men"
-       android:textSize="12sp"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.021"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/search" />
-
-   <Button
-       android:id="@+id/women"
-       android:layout_width="85dp"
-       android:layout_height="35dp"
-       android:layout_marginBottom="731dp"
-       android:background="@drawable/rounded_edges_white"
-       android:backgroundTint="@color/colorAccentWhite"
-       android:text="@string/women"
-       android:textSize="12sp"
-       app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.25"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/search"
-       app:layout_constraintVertical_bias="0.65" />
-
-   <Button
-       android:id="@+id/children"
-       android:layout_width="100dp"
-       android:layout_height="35dp"
-       android:layout_marginTop="8dp"
-       android:background="@drawable/rounded_edges_white"
-       android:backgroundTint="@color/colorAccentWhite"
-       android:text="@string/children"
-       android:textSize="12sp"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.57"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/search" />
-
-
-
-
-   <androidx.constraintlayout.widget.ConstraintLayout
-       android:id="@+id/select_layout"
-       android:layout_width="match_parent"
-       android:layout_height="38dp"
-       android:layout_marginTop="8dp"
-       android:orientation="vertical"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintHorizontal_bias="0.0"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/women">
-
+    <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/colorAccentGary"
+    android:layoutAnimation="@anim/fragment_fade_enter"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
        <Button
-           android:id="@+id/t_shirt"
-           android:layout_width="70dp"
-           android:layout_height="33dp"
+           android:id="@+id/button"
+           android:layout_width="40dp"
+           android:layout_height="40dp"
+           android:layout_marginTop="16dp"
+           android:background="@drawable/ic_search_black_24dp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.98"
+           app:layout_constraintStart_toStartOf="@+id/search"
+           app:layout_constraintTop_toTopOf="parent" />
+       <Button
+           android:id="@+id/sort_label"
+           android:layout_width="105dp"
+           android:layout_height="35dp"
+           android:layout_marginTop="8dp"
            android:background="@drawable/rounded_edges_white"
            android:backgroundTint="@color/colorAccentWhite"
-           android:text="@string/t_shirt"
+           android:text="@string/sort_by"
            android:textSize="12sp"
            app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintHorizontal_bias="0.01"
+           app:layout_constraintHorizontal_bias="0.93"
            app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
-
+           app:layout_constraintTop_toBottomOf="@+id/search" />
        <Button
-           android:id="@+id/t_shirt2"
+           android:id="@+id/men_label"
+           android:layout_width="65dp"
+           android:layout_height="35dp"
+           android:layout_marginTop="8dp"
+           android:background="@drawable/rounded_edges_white"
+           android:backgroundTint="@color/colorAccentWhite"
+           android:text="@string/men"
+           android:textSize="12sp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.021"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/search" />
+       <Button
+           android:id="@+id/women"
+           android:layout_width="85dp"
+           android:layout_height="35dp"
+           android:layout_marginBottom="731dp"
+           android:background="@drawable/rounded_edges_white"
+           android:backgroundTint="@color/colorAccentWhite"
+           android:text="@string/women"
+           android:textSize="12sp"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintHorizontal_bias="0.25"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/search"
+           app:layout_constraintVertical_bias="0.65" />
+       <Button
+           android:id="@+id/children"
            android:layout_width="100dp"
-           android:layout_height="33dp"
+           android:layout_height="35dp"
+           android:layout_marginTop="8dp"
            android:background="@drawable/rounded_edges_white"
            android:backgroundTint="@color/colorAccentWhite"
-           android:text="@string/under_wear"
+           android:text="@string/children"
            android:textSize="12sp"
            app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintHorizontal_bias="0.27"
+           app:layout_constraintHorizontal_bias="0.57"
            app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
-
-       <Button
-           android:id="@+id/t_shirt3"
-           android:layout_width="70dp"
-           android:layout_height="33dp"
-           android:background="@drawable/rounded_edges_white"
-           android:backgroundTint="@color/colorAccentWhite"
-           android:text="@string/jeans"
-           android:textSize="12sp"
+           app:layout_constraintTop_toBottomOf="@+id/search" />
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:id="@+id/select_layout"
+           android:layout_width="match_parent"
+           android:layout_height="38dp"
+           android:layout_marginTop="8dp"
+           android:orientation="vertical"
            app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintHorizontal_bias="0.607"
+           app:layout_constraintHorizontal_bias="0.0"
            app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
-
-       <Button
-           android:id="@+id/t_shirt4"
-           android:layout_width="70dp"
-           android:layout_height="33dp"
-           android:background="@drawable/rounded_edges_white"
-           android:backgroundTint="@color/colorAccentWhite"
-           android:text="@string/misc"
-           android:textSize="12sp"
-           app:layout_constraintEnd_toEndOf="parent"
-           app:layout_constraintHorizontal_bias="0.891"
-           app:layout_constraintStart_toStartOf="parent"
-           app:layout_constraintTop_toTopOf="parent" />
-
-   </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>-->
+           app:layout_constraintTop_toBottomOf="@+id/women">
+           <Button
+               android:id="@+id/t_shirt"
+               android:layout_width="70dp"
+               android:layout_height="33dp"
+               android:background="@drawable/rounded_edges_white"
+               android:backgroundTint="@color/colorAccentWhite"
+               android:text="@string/t_shirt"
+               android:textSize="12sp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.01"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+           <Button
+               android:id="@+id/t_shirt2"
+               android:layout_width="100dp"
+               android:layout_height="33dp"
+               android:background="@drawable/rounded_edges_white"
+               android:backgroundTint="@color/colorAccentWhite"
+               android:text="@string/under_wear"
+               android:textSize="12sp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.27"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+           <Button
+               android:id="@+id/t_shirt3"
+               android:layout_width="70dp"
+               android:layout_height="33dp"
+               android:background="@drawable/rounded_edges_white"
+               android:backgroundTint="@color/colorAccentWhite"
+               android:text="@string/jeans"
+               android:textSize="12sp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.607"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+           <Button
+               android:id="@+id/t_shirt4"
+               android:layout_width="70dp"
+               android:layout_height="33dp"
+               android:background="@drawable/rounded_edges_white"
+               android:backgroundTint="@color/colorAccentWhite"
+               android:text="@string/misc"
+               android:textSize="12sp"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintHorizontal_bias="0.891"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+       </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>-->

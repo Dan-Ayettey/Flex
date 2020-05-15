@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="true">
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".ProfileActivityHelper"/>
+        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".RegisterActivity"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
