@@ -1,25 +1,19 @@
 package com.example.flux
 
 import android.app.Activity
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.*
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.graphics.get
-import androidx.core.view.forEach
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -27,10 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Text
 import java.net.URL
-import androidx.navigation.fragment.findNavController
-import java.nio.file.Paths.get
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,12 +41,17 @@ class MainActivity : AppCompatActivity() {
 
 
         wearCategoryListener()
-        var isMeant=fetchItems(this)
+        val isMeant=fetchItems(this)
         if(isMeant){
 
-            val category =CategoryAdaptor(this, 5, arrayOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), arrayOf(storeDB))
+                    println(storeDB.length())
+        var configItems = arrayOf("  Public Transit", "  Cycling", "  Relics Maker")
+                  val category = CategoryAdaptor(this,storeDB)
 
-            wears_category_items_view.adapter= category
+                 wears_category_items_view.adapter= category
+
+
+
         }
 
 
@@ -280,60 +276,34 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-    private lateinit var  storeDB : JSONArray
-    private fun fetchItems(context: Activity): Boolean{
+    protected var  storeDB =  JSONArray()
+    protected fun fetchItems(context: Activity): Boolean{
         val parser=FileParser()
-        storeDB = parser.parseFile(context, R.raw.new_mvc)
-        for (items in arrayOf(storeDB)){
-            storeDB = items;
-
-            if (storeDB.length() == items.length()){
-                println(storeDB)
-                return  true
-            }
-        }
+       val store = parser.parseFile(context, R.raw.new_mvc)
 
 
-      return  false
+            storeDB=store
+
+        //storeDB.set(0,store);
+      return  true
     }
-    class CategoryAdaptor(private  var context:Activity,private var desc:Int, private  var itemSize:Array<Int>,storeDb: Array<JSONArray>) :
-        ArrayAdapter<Int>(context,desc,itemSize) {
-        private var imageView = ImageView(context)
+    class CategoryAdaptor(private var context:Activity,var storeDb: JSONArray) :
+        BaseAdapter() {
 
 
-        private class DownloadFilesTask :
-            AsyncTask<URL?, Int?, Long?>() {
-            protected override fun doInBackground(vararg urls: URL?): Long {
-                val count = urls.size
-                var totalSize: Long = 0
-                for (i in 0 until count) {
-
-                    publishProgress((i / count.toFloat() * 100).toInt())
-                    // Escape early if cancel() is called
-                    if (isCancelled()) break
-                }
-                return totalSize
-            }
-
-            protected override fun onProgressUpdate(vararg progress: Int?) {
-               // setProgressPercent(progress[0])
-            }
-
-             fun onPostExecute(result: Long) {
-              //  showDialog("Downloaded $result bytes")
-            }
-        }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var   pica=Picasso.with(context)
-            var layout = context.layoutInflater
 
-            var view =layout.inflate(R.layout.grid_resource,null,true)
-            var gridItemView = view.findViewById<ImageView>(R.id.grid_item)
-            var gridItemCart = view.findViewById<Button>(R.id.grid_add_to_cart)
-            var gridItemColor = view.findViewById<Button>(R.id.grid_item_color)
-            var gridItemZoom = view.findViewById<Button>(R.id.grid_zoom_item)
+            val layout = context.layoutInflater
+
+            val view =layout.inflate(R.layout.grid_resource,null,true)
+            val gridItemView = view.findViewById<ImageView>(R.id.grid_item)
+            var gridview = context.findViewById<GridView>(R.id.wears_category_items_view)
+            val gridItemCart = view.findViewById<Button>(R.id.grid_add_to_cart)
+            val gridItemColor = view.findViewById<Button>(R.id.grid_item_color)
+            val gridItemZoom = view.findViewById<Button>(R.id.grid_zoom_item)
             var handler = Handler()
+
 
             /*
             var imageUrl = URL("http://whc.unesco.org//uploads/thumbs/site_1485_0002-750-0-20150610150743.jpg")
@@ -342,17 +312,20 @@ class MainActivity : AppCompatActivity() {
             conn.connect()
             val stream: InputStream = conn.inputStream
             val bitmap = BitmapFactory.decodeStream(stream)*/
-            Picasso.with(context).load("https://www.zappos.com/images/z/3/1/4/6/4/2/3146420-3-4x.jpg").into(  gridItemView)
 
+            val url=JSONObject(storeDb[position].toString()).getString("image_url_4x").replace("http","https")
 
+            Picasso.with(context).load(url).fetch(object : Callback {
+                override fun onSuccess() {
 
+                    val bitmap = Picasso.with(context).load(url).into(gridItemView)
+                }
 
-            if (convertView == null) {
+                override fun onError() {
 
-              //  gridItemView .layoutParams = ConstraintLayout.LayoutParams(580,600 )
-            } else {
-//               gridItemView = convertView as ImageView
-            }
+                }
+            })
+
 
             gridItemCart.setBackgroundResource(R.drawable.ic_shopping_cart_black_afterdp)
             gridItemColor.setBackgroundResource(R.drawable.ic_color_lens_black_24dp)
@@ -360,6 +333,18 @@ class MainActivity : AppCompatActivity() {
 
             return view
             // return super.getView(position, convertView, parent)
+        }
+
+        override fun getItem(position: Int): Any? {
+          return null
+        }
+
+        override fun getItemId(position: Int): Long {
+            return 0
+        }
+
+        override fun getCount(): Int {
+           return  storeDb.length()
         }
 
 
