@@ -93,7 +93,9 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="traffic">Traffic</string>
     <string name="traffic_img">traffic_img</string>
-    <string name="todo">TODO</string>
+
     <string name="about">About</string>
     <string name="message">\"You can later change who can see the gender in your profile. If you want to \" +                 \"specify a different gender, or if you do not want to enter a gender, you can select the custom option.\"</string>
+    <string name="in_and_out">In and out</string>
+    <string name="todo">TODO</string>
 </resources>

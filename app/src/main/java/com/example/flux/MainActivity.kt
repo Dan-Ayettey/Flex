@@ -1,9 +1,13 @@
 package com.example.flux
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Bundle
+import android.os.StrictMode
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
@@ -11,6 +15,7 @@ import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.*
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
@@ -21,11 +26,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.URL
+import java.util.zip.Inflater
 
 
-class MainActivity : AppCompatActivity() {
-
+open class MainActivity : AppCompatActivity() {
+    private var color = 0
+    private var  storeDB =  JSONArray()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -131,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
-    private var color = 0
+
     private fun wearCategoryListener(){
 
         val  menVisibility =  findViewById<ConstraintLayout>(R.id.wear_category_option)
@@ -273,52 +279,59 @@ class MainActivity : AppCompatActivity() {
     private fun wearCategoryListenerAddToCart(){
         val addToCart = findViewById<Button>(R.id.grid_add_to_cart)
         val  menVisibility =  findViewById<ConstraintLayout>(R.id.wear_category_option)
-
-
     }
-    protected var  storeDB =  JSONArray()
-    protected fun fetchItems(context: Activity): Boolean{
+
+    private fun fetchItems(context: Activity): Boolean{
         val parser=FileParser()
        val store = parser.parseFile(context, R.raw.new_mvc)
-
-
-            storeDB=store
-
-        //storeDB.set(0,store);
+        storeDB=store
       return  true
     }
     class CategoryAdaptor(private var context:Activity,var storeDb: JSONArray) :
         BaseAdapter() {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+           return renderStock(position)
+        }
+
+        override fun getItem(position: Int): Any {
+            return  position
+        }
 
 
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-
+        private fun renderStock(position: Int):View{
             val layout = context.layoutInflater
-
             val view =layout.inflate(R.layout.grid_resource,null,true)
+             val dialogLayoutView=layout.inflate(R.layout.dialog_item_layout,null,true)
+            val progressBar = context.findViewById<ProgressBar>(R.id.progress_bar_stock)
+            val dialogImgView = dialogLayoutView.findViewById<ImageView>(R.id.dialog_zoom_img)
+            val zoomInOutSeekBar = dialogLayoutView.findViewById<SeekBar>(R.id.zoom_in_and_out)
             val gridItemView = view.findViewById<ImageView>(R.id.grid_item)
-            var gridview = context.findViewById<GridView>(R.id.wears_category_items_view)
-            val gridItemCart = view.findViewById<Button>(R.id.grid_add_to_cart)
-            val gridItemColor = view.findViewById<Button>(R.id.grid_item_color)
-            val gridItemZoom = view.findViewById<Button>(R.id.grid_zoom_item)
-            var handler = Handler()
-
-
-            /*
-            var imageUrl = URL("http://whc.unesco.org//uploads/thumbs/site_1485_0002-750-0-20150610150743.jpg")
-            val conn: HttpURLConnection = imageUrl.openConnection() as HttpURLConnection
-            conn.doInput = true
-            conn.connect()
-            val stream: InputStream = conn.inputStream
-            val bitmap = BitmapFactory.decodeStream(stream)*/
-
+            val gridItemCartButton = view.findViewById<Button>(R.id.grid_add_to_cart)
+            val gridItemColorButton = view.findViewById<Button>(R.id.grid_item_color)
+            val gridItemZoomButton = view.findViewById<Button>(R.id.grid_zoom_item)
             val url=JSONObject(storeDb[position].toString()).getString("image_url_4x").replace("http","https")
+             progressBar.visibility = View.VISIBLE
+
 
             Picasso.with(context).load(url).fetch(object : Callback {
+
                 override fun onSuccess() {
 
-                    val bitmap = Picasso.with(context).load(url).into(gridItemView)
+                    Picasso.with(context).load(url).into(dialogImgView)
+
+                     Picasso.with(context).load(url).into(gridItemView,object: Callback{
+                         override fun onSuccess() {
+                             progressBar.visibility = View.GONE
+                         }
+
+                         override fun onError() {
+                            Toast.makeText(context,"Please wait, retrieving info",Toast.LENGTH_LONG).show()
+                         }
+
+                     })
+
+
+
                 }
 
                 override fun onError() {
@@ -326,17 +339,14 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
+              dialogEvent(context,dialogLayoutView,gridItemZoomButton)
+            gridItemCartButton.setBackgroundResource(R.drawable.ic_shopping_cart_black_afterdp)
+            gridItemColorButton.setBackgroundResource(R.drawable.ic_color_lens_black_24dp)
+            gridItemZoomButton.setBackgroundResource(R.drawable.ic_zoom_in_black_24dp)
 
-            gridItemCart.setBackgroundResource(R.drawable.ic_shopping_cart_black_afterdp)
-            gridItemColor.setBackgroundResource(R.drawable.ic_color_lens_black_24dp)
-            gridItemZoom.setBackgroundResource(R.drawable.ic_zoom_in_black_24dp)
+            zoomInAndOut(zoomInOutSeekBar,dialogImgView)
+        return view
 
-            return view
-            // return super.getView(position, convertView, parent)
-        }
-
-        override fun getItem(position: Int): Any? {
-          return null
         }
 
         override fun getItemId(position: Int): Long {
@@ -346,9 +356,61 @@ class MainActivity : AppCompatActivity() {
         override fun getCount(): Int {
            return  storeDb.length()
         }
+        private fun dialogEvent(context:Activity, inflateLayout:View  ,zoomButton:Button){
+            val dialog = Dialog(context)
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
+            zoomButton.setOnClickListener{
+
+
+
+                if(inflateLayout.isVisible){
+                    dialog.setContentView(inflateLayout)
+                    dialog.show()
+
+                }
+
+
+
+
+            }
+
+        }
+
+        private fun zoomInAndOut(seekBar: SeekBar, view: View){
+            seekBar.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(
+                    seekBar: SeekBar,
+                    progress: Int,
+                    fromUser: Boolean
+                ) {
+                    view.scaleX =seekBar.progress.toFloat()
+                    view.scaleY = seekBar.progress.toFloat()
+                    Toast.makeText(context,
+                        "Progress is: " + seekBar.progress + "%",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    Toast.makeText(context,
+                        "Progress is: " + seekBar?.progress + "%",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
 
     }
 
 }
+
+
+
+
+
+
 
