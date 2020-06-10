@@ -98,4 +98,26 @@
     <string name="message">\"You can later change who can see the gender in your profile. If you want to \" +                 \"specify a different gender, or if you do not want to enter a gender, you can select the custom option.\"</string>
     <string name="in_and_out">In and out</string>
     <string name="todo">TODO</string>
+    <string name="name_on_the_card">Name on the card</string>
+    <string name="card_number">Card number</string>
+    <string name="pay">PAY</string>
+    <string name="address">address</string>
+    <string name="state">state</string>
+    <string name="post_code">Post code</string>
+    <string name="country">Country</string>
+    <string name="cv">CV</string>
+    <string name="vis">visa</string>
+    <string name="v">v</string>
+    <string name="remember_card_details">Remember card details</string>
+    <string name="order_in_process">
+        Order Submitted - "Placed" Once you have placed your order on FLEX and your credit card has been authorized,
+        your order status will appear as "Placed."Order Processing - "In Progress"
+        Once you have placed your order, it will be sent to our warehouse to be processed and
+        packed for shipment. During this time, your order status will appear as "In Progress."
+        Please allow 1 - 2 business days for the order to be processed and prepared for shipment.
+        Once the order enters the "In Progress" status, no changes, or cancellations of your order can be made.</string>
+    <string name="cancel_order">Cancel Order</string>
+    <string name="thank_for_purchasing">Processing Order</string>
+    <string name="check_out">Check Out</string>
+    <string name="completed">completed</string>
 </resources>

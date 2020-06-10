@@ -12,7 +12,11 @@
 
     </style>
 
-
+    <style name="ActionButtonStyle" parent="Widget.AppCompat.ActionButton">
+        <item name="android:minWidth">0dip</item>
+        <item name="android:paddingStart">0dip</item>
+        <item name="android:paddingEnd">0dip</item>
+    </style>
     <style name="AppTheme.NoActionBar">
 
         <item name="windowActionBar">false</item>

@@ -95,9 +95,7 @@ class RegisterActivity : AppCompatActivity() {
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         var performEventOn : Intent?
         val itemId= item.itemId
 
@@ -129,6 +127,6 @@ class RegisterActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
 
-        return super.onOptionsItemSelected(item)
+
     }
 }
