@@ -325,7 +325,7 @@ open class CartActivity: AppCompatActivity() {
             val gridItemZoomButton = view.findViewById<Button>(R.id.grid_zoom_item)
             val removeItem= gridContent.findViewById<GridView>(R.id.wears_category_items_view)
             val numberOfItems=context.findViewById<TextView>(R.id.number_of_items)
-
+            numberOfItems.visibility=View.GONE
 
             progressBar.visibility = View.VISIBLE
             val cartHolder=context.findViewById<Button>(R.id.cart_layout_holder)
@@ -357,7 +357,7 @@ open class CartActivity: AppCompatActivity() {
                     counter+=counter-1
                 }
 
-                numberOfItems.text = counter.toString()
+
                 removeItem.run{
                     notifyDataSetChanged()
                 }

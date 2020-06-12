@@ -1,49 +1,108 @@
 package com.example.flux
 
 import android.content.ClipData
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
 import androidx.core.view.get
+import com.example.flux.users.UserBuilder
+import com.example.flux.users.Users
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
 
 
 class LoginActivity : AppCompatActivity() {
-
+    private var user= Users()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
         this.title = getString(R.string.login)
-       onLoginButtonClick()
+        signIn()
 
     }
 
-    private fun onLoginButtonClick(){
+    private fun signIn(){
         val sign =findViewById<Button>(R.id.sign_in)
+        val email=findViewById<EditText>(R.id.email)
+        val password=findViewById<EditText>(R.id.password)
+        val database= FirebaseDatabase.getInstance()
+        val databaseReference=database.reference
+         val queryProvider= UserBuilder()
+         queryProvider.pullUser(this)
+
+
         var performIntent:Intent?
         sign.setOnClickListener{event ->
-            println("Hello")
-            performIntent = Intent(this,AccountActivity::class.java)
-            startActivity(performIntent)
+         password.inputType=InputType.TYPE_TEXT_VARIATION_NORMAL
+
+            var userList=ArrayList<Any>()
+            databaseReference.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    val value = dataSnapshot.value as Map<*, *>
+
+                    val user=Users()
+                    user.setEmail("${value["email"]}")
+                    user.setPassword("${value["password"]}")
+                    user.setGender("${value["gender"]}")
+                    user.setLastName("${value["lastName"]}")
+                    user.setFirstName("${value["firstName"]}")
+
+                    userList.add(user.getFirstName())
+                    userList.add(user.getEmail())
+                    userList.add(user.getPassword())
+                    if((email.text.toString() == user.getEmail() )&&(password.text.toString()==user.getPassword())){
+
+                        performIntent = Intent(this@LoginActivity,ProfileActivity::class.java)
+                        startActivity(performIntent)
+                    }else{
+                        val toast=Toast.makeText(this@LoginActivity,"The account does not exist in out database",Toast.LENGTH_LONG)
+                        toast.setGravity(Gravity.CENTER,0,0)
+                        toast.show()
+
+                    }
+                    password.inputType=InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+                }
+
+
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Failed to read value
+                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+                }
+            })
+
+
+
+
+
         }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        /*
+        //Inflate the menu; this adds items to the action bar if it is present.
+
         menuInflater.inflate(R.menu.menu_main, menu)
         val register =menu.findItem(R.id.register)
         val registerText = SpannableString(register.title);
@@ -81,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(performEventOn)
 
         }
-        if (itemId == R.id.sign_in){
+        if (itemId == R.id.register){
             performEventOn= Intent(this, RegisterActivity::class.java)
             startActivity(performEventOn)
         }
@@ -102,10 +161,7 @@ class LoginActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
 
-        return super.onOptionsItemSelected(item)
 
-         */
-        return true
     }
 
 }

@@ -16,8 +16,11 @@ import android.view.animation.Animation
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.example.flux.users.Jeans
+import com.example.flux.users.ProductBuilder
+import com.example.flux.users.UserBuilder
+import com.example.flux.users.Users
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -32,6 +35,7 @@ open class MainActivity: AppCompatActivity() {
     private var color = 0
     private var  storeDB =  JSONArray()
     private var backwardTemp= ArrayList<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +56,12 @@ open class MainActivity: AppCompatActivity() {
         }
         invalidateOptionsMenu()
         wearCategoryListener()
+        val queryProvider=UserBuilder()
+
+            queryProvider.addUser(Users())
+            queryProvider.pullUser(this)
+
+
 
 
 
@@ -104,7 +114,8 @@ open class MainActivity: AppCompatActivity() {
             startActivity(performEventOn)
 
         }
-        if (itemId == R.id.sign_in){
+        if (itemId == R.id.register){
+
             performEventOn= Intent(this, RegisterActivity::class.java)
             startActivity(performEventOn)
         }
@@ -343,10 +354,22 @@ open class MainActivity: AppCompatActivity() {
 
 
             gridItemCartButton.setOnClickListener {
+
+                val queryProvider =  ProductBuilder()
+                val buying= Jeans()
+                queryProvider.addProduct(buying)
+                buying.setProductColor("Red")
+                buying.setPrice(300.0)
+                buying.setProductName("Oracle TShirt ")
+                buying.setProductId("Y0958848883")
+                buying.setProductManufacture("Dan Damur")
+                queryProvider.pushProduct()
+                queryProvider.pullProduct()
                 counter=++counter
                 cartHolder.setBackgroundResource(R.drawable.ic_add_shopping_cart_black_24dp)
                 numberOfItems.text = counter.toString()
                     cart.add(cartImagesUrl[position])
+
             }
             for(i in 0..storeDb.length()){
 

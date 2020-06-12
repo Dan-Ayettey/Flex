@@ -21,7 +21,9 @@ import androidx.core.view.isVisible
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_completed_order.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.fab
 import kotlinx.android.synthetic.main.content_main.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -36,20 +38,34 @@ open class CompletedOrder: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_completed_order)
-        setSupportActionBar(toolbar)
+
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
 
 
-
+        backToMainPage()
+        trackOrder()
 
 
 
     }
 
+    private fun trackOrder(){
+        track.setOnClickListener{
+            val performIntent = Intent(this,TrackOrderActivity::class.java)
+            startActivity(performIntent)
 
+        }
+    }
+    private fun backToMainPage(){
+        main_button.setOnClickListener{
+           val performIntent = Intent(this,MainActivity::class.java)
+            startActivity(performIntent)
+
+        }
+    }
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         val SDK_INT = Build.VERSION.SDK_INT
         if (SDK_INT > 8) {
@@ -63,8 +79,8 @@ open class CompletedOrder: AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         val register =menu.findItem(R.id.register)
-        val registerText = SpannableString(register.title);
-        registerText.setSpan( ForegroundColorSpan(getColor(R.color.colorAccentWhite)), 0, registerText.length, 0);
+        val registerText = SpannableString(register.title)
+        registerText.setSpan( ForegroundColorSpan(getColor(R.color.colorAccentWhite)), 0, registerText.length, 0)
         register.title = registerText
         val signIn=menu.findItem(R.id.sign_in)
         val signText = SpannableString(signIn.title);

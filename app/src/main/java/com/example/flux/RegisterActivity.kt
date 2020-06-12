@@ -1,28 +1,32 @@
 package com.example.flux
 
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.RadioButton
-import android.widget.TextView
-import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_register.view.*
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.example.flux.users.UserBuilder
+import com.example.flux.users.Users
+import javax.crypto.EncryptedPrivateKeyInfo
+
 
 class RegisterActivity : AppCompatActivity() {
 
+    private var user=Users()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.title = "Register"
         setContentView(R.layout.activity_register)
         questionMarkButtonClick()
         radioButtonOnchange()
+
+        signUp()
 
     }
     private  fun questionMarkButtonClick(){
@@ -33,7 +37,7 @@ class RegisterActivity : AppCompatActivity() {
                 , Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.view.background.setTint(getColor(R.color.colorAccent))
-            var text =  toast.view.findViewById<TextView>(android.R.id.message);
+            val text =  toast.view.findViewById<TextView>(android.R.id.message);
             text.setTextColor(getColor(R.color.colorAccentWhite));
             toast.show()
         }
@@ -56,6 +60,7 @@ class RegisterActivity : AppCompatActivity() {
 
              if(radioButton.id.toString() == view.id.toString()){
                  radioButton.isChecked= true;
+                 user.setGender(radioButton.text.toString())
              }
 
          }
@@ -65,6 +70,48 @@ class RegisterActivity : AppCompatActivity() {
 
 
 
+
+
+    }
+
+    private fun signUp(){
+
+
+          val month= findViewById<EditText>(R.id.month)
+          val day= findViewById<EditText>(R.id.day)
+          val register= findViewById<Button>(R.id.sign_up)
+          val year= findViewById<EditText>(R.id.year)
+          val firstName=findViewById<EditText>(R.id.first_name)
+          val email=findViewById<EditText>(R.id.email)
+          val password=findViewById<EditText>(R.id.password)
+          val lastName=findViewById<EditText>(R.id.sure_name)
+          val queryProvider= UserBuilder()
+
+           register.setOnClickListener{
+            val dateOfBirth= "${day.text}/${month.text}/${year.text}"
+
+
+               user.setCountry("Sweden")
+               user.setPostCode(14143)
+               user.setAddress("attundagrand")
+               user.setAge(48)
+               user.setTelephone(38802340934)
+               user.setState("Accra")
+               password.inputType = InputType.TYPE_TEXT_VARIATION_NORMAL
+            user.setFirstName(firstName.text.toString())
+            user.setEmail(email.text.toString())
+            user.setPassword(email.text.toString())
+            user.setPassword(password.text.toString())
+            user.setDateOfBirth(dateOfBirth)
+            user.setLastName(lastName.text.toString())
+               queryProvider.addUser(user)
+               queryProvider.pushUser()
+               password.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+             val routeIntent= Intent(this,ProfileActivity::class.java)
+               startActivity(routeIntent)
+
+        }
 
 
     }
@@ -106,7 +153,7 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(performEventOn)
 
         }
-        if (itemId == R.id.sign_in){
+        if (itemId == R.id.register){
             performEventOn= Intent(this, RegisterActivity::class.java)
             startActivity(performEventOn)
         }

@@ -5,8 +5,8 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.os.StrictMode
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,67 +15,37 @@ import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_cart.*
-import kotlinx.android.synthetic.main.activity_main.fab
+import org.json.JSONArray
+import org.json.JSONObject
 
-
-open class CheckoutActivity: AppCompatActivity() {
-
+class TrackOrderActivity : AppCompatActivity() {
     private var color = 0
-    private var count =0
-    private var  storeDB =  kotlin.collections.ArrayList<String>()
+    private var  storeDB =  JSONArray()
+    private var backwardTemp= ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_cart)
-        //setSupportActionBar(toolbar)
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-
-        invalidateOptionsMenu()
-
-        //wearCategoryListener()
-
-
+        setContentView(R.layout.activity_track_order)
     }
 
-    override fun onBackPressed() {
 
-        val intent= Intent(this, MainActivity::class.java)
-        intent.putExtra("CART-R",storeDB)
-        startActivity(intent)
-        //finish()
 
-    }
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         val SDK_INT = Build.VERSION.SDK_INT
         if (SDK_INT > 8) {
             val policy = StrictMode.ThreadPolicy.Builder()
                 .permitAll().build()
             StrictMode.setThreadPolicy(policy)
-
         }
         return super.onCreateView(name, context, attrs)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
-        val isMeant=fetchItems(this)
-        if(isMeant){
-            //val category = CategoryAdaptor(this,storeDB,menu)
-//            wears_category_items_view.adapter= category
-        }
-        pay()
         val register =menu.findItem(R.id.register)
         val registerText = SpannableString(register.title);
         registerText.setSpan( ForegroundColorSpan(getColor(R.color.colorAccentWhite)), 0, registerText.length, 0);
@@ -276,83 +246,47 @@ open class CheckoutActivity: AppCompatActivity() {
     }
 
     private fun fetchItems(context: Activity): Boolean{
-        storeDB= intent.getStringArrayListExtra("CART")
+        val parser=FileParser()
+        storeDB= parser.parseFile(context, R.raw.new_mvc)
         return true
 
     }
-    private fun pay(){
-       val pay= findViewById<Button>(R.id.pay)
-        var routeIntent= Intent()
-
-        pay.setOnClickListener{
-            val dialog=Dialog(this)
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog.show()
-            dialog.setContentView(R.layout.activity_process_order)
-            val  cancelOrder =dialog.findViewById<Button>(R.id.cancel_order_in_progress)
-            val  orderProgressBar =dialog.findViewById<ProgressBar>(R.id.order_process_bar)
-            val handler = Handler();
-            count=0
-            Thread(Runnable {
-                while (count < 100) {
-                    count += 1
-                    handler.post {
-                        orderProgressBar.progress = count
-
-                        if(count==100){
-
-                            orderProgressBar.progress = 100
-                            routeIntent= Intent(this, CompletedOrder::class.java)
-                            this.startActivity(routeIntent)
-                        }
-
-                    }
-                    try {
-                        // Sleep for 60 milliseconds.
-                        Thread.sleep(60)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
-            }).start()
-
-
-            cancelOrder?.setOnClickListener{
-                card_details.performClick()
-                println(cancelOrder)
-                //setContentView(R.layout.activity_checkout)
-                dialog.dismiss()
-
-            }
-
-
-
-
-        }
-    }
-    class CategoryAdaptor(private var context:Activity,
-                          var storeDb: ArrayList<String>, private var menu:Menu) :
+    class CategoryAdaptor(private var context: Activity, var storeDb: JSONArray) :
         BaseAdapter() {
 
         var counter =0
-        private var routeIntent : Intent= Intent()
+        var temp = ArrayList<String>()
+
+        public fun setBucket(temp:ArrayList<String>){
+            this.temp=temp
+
+        }
+        private fun getBucket():ArrayList<String>{
+            return this.temp
+
+        }
+        private var routeIntent : Intent = Intent()
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
             return renderStock(position,parent)
         }
 
         override fun getItem(position: Int): Any {
-            return 0
+            return  cartImagesUrl[position]
         }
+
 
         private val cart = ArrayList<String>()
         private val cartImagesUrl = ArrayList<String>()
-        private fun renderStock(position: Int, parent: ViewGroup?):View{
+        private fun renderStock(
+            position: Int,
+            parent: ViewGroup?
+        ): View {
 
             val layout = context.layoutInflater
             val view =layout.inflate(R.layout.grid_resource,null ,true)
             val dialogLayoutView=layout.inflate(R.layout.dialog_item_layout,null,true)
-            val gridContent=layout.inflate(R.layout.content_main,null,true)
+            val mainContent=layout.inflate(R.layout.content_main,null,true)
             val progressBar = context.findViewById<ProgressBar>(R.id.progress_bar_stock)
             val dialogImgView = dialogLayoutView.findViewById<ImageView>(R.id.dialog_zoom_img)
             val zoomInOutSeekBar = dialogLayoutView.findViewById<SeekBar>(R.id.zoom_in_and_out)
@@ -360,66 +294,76 @@ open class CheckoutActivity: AppCompatActivity() {
             val gridItemCartButton = view.findViewById<Button>(R.id.grid_add_to_cart)
             val gridItemColorButton = view.findViewById<Button>(R.id.grid_item_color)
             val gridItemZoomButton = view.findViewById<Button>(R.id.grid_zoom_item)
-            val removeItem= gridContent.findViewById<GridView>(R.id.wears_category_items_view)
-            val numberOfItems=view.findViewById<TextView>(R.id.number_of_items)
+            val numberOfItems=context.findViewById<TextView>(R.id.number_of_items)
+
+            val url=
+                JSONObject(storeDb[position].toString()).getString("image_url_4x").replace("http","https")
             progressBar.visibility = View.VISIBLE
-            val cartHolder = context.findViewById<Button>(R.id.cart_layout_holder)
+
+            val cartHolder=context.findViewById<Button>(R.id.cart_layout_holder)
+
             cartHolder.setOnClickListener{
 
-                routeIntent= Intent(context, CheckoutActivity::class.java)
+                routeIntent= Intent(context,  CartActivity::class.java)
+                val urls= getBucket()
+                for (value in urls){
+                    cart.add(value)
+
+                }
                 routeIntent.putExtra("CART",cart)
                 context.startActivity(routeIntent)
 
             }
 
-            routeIntent.putExtra("CART-R",storeDb)
-            //  context.startActivity(routeIntent)
+
+
             gridItemCartButton.setOnClickListener {
-                parent?.removeViewInLayout(view)
-                storeDb.removeAt(position)
-                removeItem.run{
-                    notifyDataSetChanged()
+                counter=++counter
+                cartHolder.setBackgroundResource(R.drawable.ic_add_shopping_cart_black_24dp)
+                numberOfItems.text = counter.toString()
+                cart.add(cartImagesUrl[position])
+            }
+            for(i in 0..storeDb.length()){
+
+
+                if(i<storeDb.length()){
+
+                    val urls=
+                        JSONObject(storeDb[i].toString()).getString("image_url_4x").replace("http","https")
+
+                    cartImagesUrl.add(i,urls)
+
+
+
                 }
+
             }
 
-
-            Picasso.with(context).load( storeDb[position]).fetch(object : Callback {
+            Picasso.with(context).load(url).fetch(object : Callback {
 
                 override fun onSuccess() {
-                    removeItem.deferNotifyDataSetChanged();
-                    Picasso.with(context).load(storeDb[position]).into(dialogImgView)
-                    Picasso.with(context).load(storeDb[position])
-                        .into(gridItemView, object : Callback {
-                            override fun onSuccess() {
-                                progressBar.visibility = View.GONE
-                            }
 
-                            override fun onError() {
-                                Toast.makeText(
-                                    context,
-                                    "Please wait, retrieving info",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
+                    Picasso.with(context).load(url).into(dialogImgView)
+                    Picasso.with(context).load(url).into(gridItemView,object: Callback {
+                        override fun onSuccess() {
+                            progressBar.visibility = View.GONE
+                        }
+                        override fun onError() {
+                            Toast.makeText(context,"Please wait, retrieving info", Toast.LENGTH_LONG).show()
+                        }
 
-                        })
+                    })
                 }
 
                 override fun onError() {
-                    Toast.makeText(
-                        context,
-                        "Please wait, retrieving info",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                    Toast.makeText(context,"Please wait, retrieving info", Toast.LENGTH_LONG).show()
 
                 }
             })
 
 
-
             dialogEvent(context,dialogLayoutView,gridItemZoomButton)
-            gridItemCartButton.setBackgroundResource(R.drawable.ic_remove_shopping_cart_black_24dp)
+            gridItemCartButton.setBackgroundResource(R.drawable.ic_shopping_cart_black_afterdp)
             gridItemColorButton.setBackgroundResource(R.drawable.ic_color_lens_black_24dp)
             gridItemZoomButton.setBackgroundResource(R.drawable.ic_zoom_in_black_24dp)
             zoomInAndOut(zoomInOutSeekBar,dialogImgView)
@@ -430,14 +374,15 @@ open class CheckoutActivity: AppCompatActivity() {
         }
 
 
+
         override fun getItemId(position: Int): Long {
             return 0
         }
 
         override fun getCount(): Int {
-            return storeDb.size
+            return storeDb.length()
         }
-        private fun dialogEvent(context:Activity, inflateLayout:View  ,zoomButton:Button){
+        private fun dialogEvent(context: Activity, inflateLayout: View, zoomButton: Button){
             val dialog = Dialog(context)
             dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
@@ -459,7 +404,7 @@ open class CheckoutActivity: AppCompatActivity() {
         }
 
         private fun zoomInAndOut(seekBar: SeekBar, view: View){
-            seekBar.setOnSeekBarChangeListener(object :SeekBar.OnSeekBarChangeListener{
+            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(
                     seekBar: SeekBar,
                     progress: Int,
@@ -488,12 +433,3 @@ open class CheckoutActivity: AppCompatActivity() {
     }
 
 }
-
-
-
-
-
-
-
-
-
