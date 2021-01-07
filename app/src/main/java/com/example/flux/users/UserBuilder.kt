@@ -2,7 +2,6 @@ package com.example.flux.users
 
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -16,13 +15,13 @@ class UserBuilder(): AppCompatActivity(){
 
 
 
-    private   var users= ArrayList<IPerson>()
+    private   var users= ArrayList<Users>()
     private var database= FirebaseDatabase.getInstance()
     private var databaseReference=database.reference
 
 
 
-    public fun addUser(product:IPerson) {
+    public fun addUser(product: Users) {
         this.users.add(product)
 
     }

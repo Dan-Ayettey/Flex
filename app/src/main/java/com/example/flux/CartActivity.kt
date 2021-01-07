@@ -37,7 +37,7 @@ open class CartActivity: AppCompatActivity() {
 
         setContentView(R.layout.activity_checkout)
         //setSupportActionBar(toolbar)
-
+        title="Durunshop"
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()

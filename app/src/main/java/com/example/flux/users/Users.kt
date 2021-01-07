@@ -1,6 +1,9 @@
 package com.example.flux.users
 
-class Users:IPerson{
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+
+open class Users:RealmObject(){
 
 
     private lateinit var  address: String
@@ -63,53 +66,53 @@ class Users:IPerson{
     }
 
 
-    override fun getFirstName(): String {
+     fun getFirstName(): String {
         return firstName
     }
 
-    override fun getLastName(): String {
+     fun getLastName(): String {
         return  lastName
     }
 
-    override fun getPassword(): String {
+     fun getPassword(): String {
         return password
     }
 
-    override fun getAge(): Int {
+     fun getAge(): Int {
         return  this.age
     }
 
 
-    override fun getGender(): String {
+     fun getGender(): String {
         return gender
     }
-    override fun getAddress(): String {
+     fun getAddress(): String {
         return  address
     }
 
-    override fun getPostcode(): Int {
+     fun getPostcode(): Int {
         return  postcode
     }
 
 
 
-    override fun getCountry(): String {
+     fun getCountry(): String {
         return country
     }
 
-    override fun getState(): String {
+     fun getState(): String {
         return state
     }
 
-    override fun getTelephone(): Long {
+     fun getTelephone(): Long {
         return  telephone
     }
 
-    override fun getEmail(): String {
+     fun getEmail(): String {
         return email
     }
 
-    override fun getDateOfBirth(): String {
+     fun getDateOfBirth(): String {
         return  this.dateOfBirth
     }
 

@@ -12,23 +12,19 @@
         style="@style/divider"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="12dp"
         android:height="30dp"
         android:background="@color/colorAccentGray"
         android:backgroundTint="@color/colorAccentGray"
-        app:layout_constraintBottom_toTopOf="@+id/wears_category_items_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wear_category_main_layout" />
 
     <GridView
         android:id="@+id/wears_category_items_view"
-        android:layout_width="407dp"
-        android:layout_height="513dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="415dp"
+        android:layout_height="545dp"
 
 
-        android:layout_marginBottom="28dp"
         android:background="@color/colorAccentWhite"
         android:columnWidth="200dp"
         android:gravity="center"
@@ -36,12 +32,11 @@
         android:numColumns="2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="3dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wear_category_main_layout"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/divider">
 
     </GridView>
 
@@ -51,6 +46,7 @@
         android:layout_height="114dp"
         android:layout_marginTop="50dp"
         android:background="@color/colorAccentWhite"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"

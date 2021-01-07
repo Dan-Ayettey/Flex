@@ -12,14 +12,11 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.children
-import androidx.core.view.get
 import com.example.flux.users.UserBuilder
 import com.example.flux.users.Users
 import com.google.firebase.database.DataSnapshot
