@@ -37,16 +37,7 @@ open class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-   /*
-       val realm = RealmIOQuery();
-         realm.initializeRealm(this)
-      val query = realm.query()
-             query.beginTransaction();
-       var currentIdNum: Number? = query.where(Users::class.java).max("pKey")
-       print(currentIdNum)
-         val user=query.createObject(Users::class.java)
-         user.setFirstName("Dan");
-        query.commitTransaction();*/
+        
 
        title="Duronshop"
        setSupportActionBar(toolbar)
@@ -354,7 +345,6 @@ open class MainActivity: AppCompatActivity() {
            position: Int,
            parent: ViewGroup?
        ):View{
-
            val layout = context.layoutInflater
            val view =layout.inflate(R.layout.grid_resource, null, true)
            val dialogLayoutView=layout.inflate(R.layout.dialog_item_layout, null, true)
@@ -367,22 +357,18 @@ open class MainActivity: AppCompatActivity() {
            val gridItemColorButton = view.findViewById<Button>(R.id.grid_item_color)
            val gridItemZoomButton = view.findViewById<Button>(R.id.grid_zoom_item)
            val numberOfItems=context.findViewById<TextView>(R.id.number_of_items)
-
            val url=JSONObject(storeDb[position].toString()).getString("image_url_4x").replace(
                "http",
                "https"
            )
-            progressBar.visibility = View.VISIBLE
 
+           progressBar.visibility = View.VISIBLE
            val cartHolder=context.findViewById<Button>(R.id.cart_layout_holder)
-
            cartHolder.setOnClickListener{
-
               routeIntent= Intent(context, CartActivity::class.java)
                val urls= getBucket()
                for (value in urls){
                    cart.add(value)
-
                }
                routeIntent.putExtra("CART", cart)
                context.startActivity(routeIntent)

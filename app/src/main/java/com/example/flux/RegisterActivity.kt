@@ -10,8 +10,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.flux.users.RealmIOQuery
 import com.example.flux.users.UserBuilder
 import com.example.flux.users.Users
+import com.google.android.gms.tasks.Tasks.await
+import kotlinx.coroutines.android.awaitFrame
+import java.util.concurrent.Delayed
 
 
 class RegisterActivity : AppCompatActivity() {
@@ -72,46 +76,72 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun signUp(){
+    override fun onDestroy() {
+        super.onDestroy()
+        RealmIOQuery(this).query().close()
+
+    }
+    private fun signUp() {
+
+        val month = findViewById<EditText>(R.id.month)
+        val day = findViewById<EditText>(R.id.day)
+        val register = findViewById<Button>(R.id.sign_up)
+        val year = findViewById<EditText>(R.id.year)
+        val firstName = findViewById<EditText>(R.id.first_name)
+        val email = findViewById<EditText>(R.id.email)
+        val password = findViewById<EditText>(R.id.password)
+        val lastName = findViewById<EditText>(R.id.sure_name)
+
+        register.setOnClickListener {
+
+            val dateOfBirth = "${day.text}/${month.text}/${year.text}"
+
+            password.inputType = InputType.TYPE_TEXT_VARIATION_NORMAL
 
 
-          val month= findViewById<EditText>(R.id.month)
-          val day= findViewById<EditText>(R.id.day)
-          val register= findViewById<Button>(R.id.sign_up)
-          val year= findViewById<EditText>(R.id.year)
-          val firstName=findViewById<EditText>(R.id.first_name)
-          val email=findViewById<EditText>(R.id.email)
-          val password=findViewById<EditText>(R.id.password)
-          val lastName=findViewById<EditText>(R.id.sure_name)
-          val queryProvider= UserBuilder()
+            if (email.text.toString() != "" && password.text.toString() != "" ) {
 
-           register.setOnClickListener{
-            val dateOfBirth= "${day.text}/${month.text}/${year.text}"
+                    val realm = RealmIOQuery(this)
+                    val user=Users()
+                    password.inputType=InputType.TYPE_TEXT_VARIATION_NORMAL
+                    val write = realm.createUser()
+                    password.inputType=InputType.TYPE_TEXT_VARIATION_PASSWORD
+                //if ((email.text.toString() == user.getEmail()) && (password.text.toString() == user.getPassword()))
+                val pKey = write.where(user::class.java).max("pKey")
+                val count= pKey?.toInt()?.plus(1);
+                println(count)
+                write.executeTransactionAsync { real->
+                  val ob= real.createObject(Users::class.java, count)
+                    ob.setFirstName(firstName.text.toString())
+                    ob.setEmail(email.text.toString())
+                    ob.setPassword(password.text.toString())
+                    ob.setDateOfBirth(dateOfBirth)
+                    ob.setLastName(lastName.text.toString())
+                    Thread.sleep(1000)
+                    startActivity(Intent(this,LoginActivity::class.java))
+                }
+                val toast = Toast.makeText(
+                    this@RegisterActivity,
+                    "The account was successfully created",
+                    Toast.LENGTH_LONG
+                )
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
 
 
-               user.setCountry("Sweden")
-               user.setPostCode(14143)
-               user.setAddress("attundagrand")
-               user.setAge(48)
-               user.setTelephone(38802340934)
-               user.setState("Accra")
-               password.inputType = InputType.TYPE_TEXT_VARIATION_NORMAL
-            user.setFirstName(firstName.text.toString())
-            user.setEmail(email.text.toString())
-            user.setPassword(email.text.toString())
-            user.setPassword(password.text.toString())
-            user.setDateOfBirth(dateOfBirth)
-            user.setLastName(lastName.text.toString())
-               queryProvider.addUser(user)
-               queryProvider.pushUser()
-               password.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+            } else {
+                val toast = Toast.makeText(
+                    this@RegisterActivity,
+                    "The text field must not be left empty",
+                    Toast.LENGTH_LONG
+                )
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
 
-             val routeIntent= Intent(this,ProfileActivity::class.java)
-               startActivity(routeIntent)
+            }
+
 
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

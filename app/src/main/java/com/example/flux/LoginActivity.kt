@@ -12,11 +12,10 @@ import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 
-import android.widget.TextView
-import android.widget.Toast
+import com.example.flux.users.RealmIOQuery
 import com.example.flux.users.UserBuilder
 import com.example.flux.users.Users
 import com.google.firebase.database.DataSnapshot
@@ -24,10 +23,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_login.*
+import java.io.SerializablePermission
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LoginActivity : AppCompatActivity() {
-    private var user= Users()
+    private var profileTemp= ArrayList<String>()
+    private var routeIntent : Intent= Intent()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,59 +44,36 @@ class LoginActivity : AppCompatActivity() {
         val sign =findViewById<Button>(R.id.sign_in)
         val email=findViewById<EditText>(R.id.email)
         val password=findViewById<EditText>(R.id.password)
+        val firstName=findViewById<EditText>(R.id.first_name)
+        val lastName=findViewById<EditText>(R.id.sure_name)
         val database= FirebaseDatabase.getInstance()
         val databaseReference=database.reference
-         val queryProvider= UserBuilder()
+        val queryProvider= UserBuilder()
          queryProvider.pullUser(this)
 
+        sign.setOnClickListener {
+            val realm = RealmIOQuery(this)
+            val user=Users()
+            password.inputType=InputType.TYPE_TEXT_VARIATION_NORMAL
+            val users = realm.authorizeUser(email.text.toString(),password.text.toString(),user)
+            password.inputType=InputType.TYPE_TEXT_VARIATION_PASSWORD
+            if(users !=null){
+               Intent(this@LoginActivity,ProfileActivity::class.java)
+                routeIntent = Intent(this@LoginActivity,ProfileActivity::class.java)
+                profileTemp.add(users.getEmail())
+                profileTemp.add(users.getFirstName().plus(""))
+                routeIntent.putExtra("USERS",profileTemp);
+                startActivity( routeIntent )
 
-        var performIntent:Intent?
-        sign.setOnClickListener{event ->
-         password.inputType=InputType.TYPE_TEXT_VARIATION_NORMAL
+            }else{
+                val toast=Toast.makeText(this@LoginActivity,"The account does not exist in out database",Toast.LENGTH_LONG)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
 
-            var userList=ArrayList<Any>()
-            databaseReference.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                    val value = dataSnapshot.value as Map<*, *>
-
-                    val user=Users()
-                    user.setEmail("${value["email"]}")
-                    user.setPassword("${value["password"]}")
-                    user.setGender("${value["gender"]}")
-                    user.setLastName("${value["lastName"]}")
-                    user.setFirstName("${value["firstName"]}")
-
-                    userList.add(user.getFirstName())
-                    userList.add(user.getEmail())
-                    userList.add(user.getPassword())
-                    if((email.text.toString() == user.getEmail() )&&(password.text.toString()==user.getPassword())){
-
-                        performIntent = Intent(this@LoginActivity,ProfileActivity::class.java)
-                        startActivity(performIntent)
-                    }else{
-                        val toast=Toast.makeText(this@LoginActivity,"The account does not exist in out database",Toast.LENGTH_LONG)
-                        toast.setGravity(Gravity.CENTER,0,0)
-                        toast.show()
-
-                    }
-                    password.inputType=InputType.TYPE_TEXT_VARIATION_PASSWORD
-
-                }
-
-
-
-                override fun onCancelled(error: DatabaseError) {
-                    // Failed to read value
-                    Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
-                }
-            })
-
-
-
-
+            }
 
         }
+
     }
 
 
@@ -152,7 +132,7 @@ class LoginActivity : AppCompatActivity() {
                 , Toast.LENGTH_LONG)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.view.background.setTint(getColor(R.color.colorAccent))
-            var text =  toast.view.findViewById<TextView>(android.R.id.message);
+            val text =  toast.view.findViewById<TextView>(android.R.id.message);
             text.setTextColor(getColor(R.color.colorAccentWhite));
             toast.show()
         }

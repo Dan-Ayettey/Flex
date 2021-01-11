@@ -7,15 +7,17 @@ open class Users:RealmObject(){
 
 
     private lateinit var  address: String
-    private var  age: Int =0
-    private lateinit var  gender: String
-    private lateinit var firstName:String
-    private lateinit var email:String
-    private lateinit var password:String
-    private lateinit var lastName:String
-    private lateinit var country:String
-    private lateinit var productId:String
-    private lateinit var productName:String
+    private var  age: Int = 0
+    private var  gender = ""
+    private var firstName =""
+    private  var email =""
+    private var password =""
+    private  var lastName =""
+    private  var country =""
+    private  var productId =""
+    private  var productName =""
+    @PrimaryKey
+    private  var pKey:Int = 0;
     private lateinit var dateOfBirth:String
 
 
@@ -29,7 +31,13 @@ open class Users:RealmObject(){
         this.firstName=firstName
     }
 
+    public fun setPKey(pKey:Int){
+        this.pKey=pKey
+    }
 
+    fun getPKey():Int{
+        return this.pKey;
+    }
     public fun setDateOfBirth(dateOfBirth:String){
         this.dateOfBirth=dateOfBirth
     }
